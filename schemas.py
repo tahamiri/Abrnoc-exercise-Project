@@ -10,3 +10,14 @@ class Customer(CustomerBase):
     id: int
     class Config:
         orm_mode = True
+
+
+class SubscriptionBase(BaseModel):
+    name: str
+    price: float
+    active: bool
+
+class Subscription(SubscriptionBase):
+    id: int
+    class Config:
+        orm_mode = True

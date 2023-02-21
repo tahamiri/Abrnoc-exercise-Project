@@ -39,9 +39,16 @@ def read_customer(customer_id:int, db: Session = Depends(get_db)):
     return db_user
 
 
-
-
-
+@app.post("/subscription/", response_model=schemas.Subscription)
+def create_subscription(subscription:schemas.SubscriptionBase, db: Session = Depends(get_db)):
+    db_subscription = db.query(models.Subscription).filter(models.Subscription.name==subscription.name).first()
+    if db_subscription:
+        raise HTTPException(status_code=400, detail="subscription already exists")
+    subscription = models.Subscription(name=subscription.name, price=subscription.price, active=subscription.active)
+    db.add(subscription)
+    db.commit()
+    db.refresh(subscription)
+    return subscription
 
 
 
