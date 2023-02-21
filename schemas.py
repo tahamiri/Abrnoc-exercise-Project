@@ -8,6 +8,8 @@ class CustomerBase(BaseModel):
 
 class Customer(CustomerBase):
     id: int
+    subscription: list
+    invoice: list
     class Config:
         orm_mode = True
 
@@ -15,9 +17,24 @@ class Customer(CustomerBase):
 class SubscriptionBase(BaseModel):
     name: str
     price: float
-    active: bool
 
 class Subscription(SubscriptionBase):
     id: int
+    customer: list
     class Config:
         orm_mode = True
+
+
+class InvoiceBase(BaseModel):
+    price: float
+    start_date: str
+    end_date: str
+
+class Invoice(InvoiceBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+
+
+

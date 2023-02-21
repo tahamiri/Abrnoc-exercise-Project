@@ -39,19 +39,61 @@ def read_customer(customer_id:int, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.post("/subscription/", response_model=schemas.Subscription)
+@app.post("/subscriptions/", response_model=schemas.Subscription)
 def create_subscription(subscription:schemas.SubscriptionBase, db: Session = Depends(get_db)):
     db_subscription = db.query(models.Subscription).filter(models.Subscription.name==subscription.name).first()
     if db_subscription:
         raise HTTPException(status_code=400, detail="subscription already exists")
-    subscription = models.Subscription(name=subscription.name, price=subscription.price, active=subscription.active)
+    subscription = models.Subscription(name=subscription.name, price=subscription.price)
     db.add(subscription)
     db.commit()
     db.refresh(subscription)
     return subscription
 
 
+@app.get("/subscriptions/{subscription_id}", response_model=schemas.Subscription)
+def read_subscription(subscription_id:int, db: Session = Depends(get_db)):
+    db_sub = db.query(models.Subscription).filter(models.Subscription.id==subscription_id).first()
+    if db_sub is None:
+        raise HTTPException(status_code=404, detail="subscription not found")
+    return db_sub
 
+
+
+@app.get("/addsub/{subscription_id}/customer/{customer_id}", response_model=schemas.Customer)
+def add_sub(subscription_id:int,customer_id:int, db: Session = Depends(get_db)):
+    db_sub = db.query(models.Subscription).filter(models.Subscription.id==subscription_id).first()
+    if db_sub is None:
+        raise HTTPException(status_code=404, detail="subscription not found")    
+    db_cust = db.query(models.Customer).filter(models.Customer.id==customer_id).first()
+    if db_cust is None:
+        raise HTTPException(status_code=404, detail="customer not found")
+    
+    #db_sub.customer.append(db_cust)
+    db_cust.subscription.append(db_sub)
+    db.commit()
+    return db_cust
+    
+
+
+@app.get("/delsub/{subscription_id}/customer/{customer_id}", response_model=schemas.Customer)
+def add_sub(subscription_id:int,customer_id:int, db: Session = Depends(get_db)):
+    db_sub = db.query(models.Subscription).filter(models.Subscription.id==subscription_id).first()
+    if db_sub is None:
+        raise HTTPException(status_code=404, detail="subscription not found")    
+    db_cust = db.query(models.Customer).filter(models.Customer.id==customer_id).first()
+    if db_cust is None:
+        raise HTTPException(status_code=404, detail="customer not found")
+    
+    #db_sub.customer.remove(db_cust)
+    try:
+        db_cust.subscription.remove(db_sub)
+        db.commit()
+        return db_cust
+    except ValueError:
+        return db_cust
+
+    
 
 
 
