@@ -2,8 +2,8 @@ from fastapi import FastAPI , Path , Query , status , HTTPException , Depends
 from typing import Optional , Union
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from database import engine , SessionLocal
-import schemas , models
+from models.database import engine , SessionLocal
+import models.schemas as schemas , models.model as models
 import threading
 from datetime import datetime
 
@@ -41,6 +41,12 @@ def invoice(subscription_id2:int,customer_id2:int, db1: Session):
         db1.commit()
     else:
         timer.cancel()
+
+# root url 
+
+@app.get("/")
+def root_page():
+    return "welcome to root"
 
 
 @app.post("/customers/", response_model=schemas.Customer)
@@ -121,8 +127,17 @@ def add_sub(subscription_id:int,customer_id:int, db: Session = Depends(get_db)):
     except ValueError:
         return db_cust
 
+
+
+@app.get("/invoice/{customer_id}")
+def invoices(customer_id:int, db: Session = Depends(get_db)):
+    db_cust = db.query(models.Customer).filter(models.Customer.id==customer_id).first()
+    if db_cust is None:
+        raise HTTPException(status_code=404, detail="customer not found")
+    inv = db_cust.invoice
     
 
+    return (f"there is {len(inv)} invoices.") 
 
 
 

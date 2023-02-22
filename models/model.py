@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from database import Base
+from .database import Base
 from sqlalchemy import Column , String , Integer , Float , Boolean , ForeignKey , DateTime , Table
 from sqlalchemy.orm import relationship , Mapped , mapped_column
 from typing import List
