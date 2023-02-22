@@ -25,7 +25,7 @@ class Customer(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username = Column(String, unique=True)
     credit = Column(Float)
-    invoice: Mapped[List["Invoice"]] = relationship()
+    invoice: Mapped[List["Invoice"]] = relationship(back_populates="customer")
     subscription: Mapped[List[Subscription]] = relationship(
         secondary=association_table, back_populates="customer"
     )
@@ -49,6 +49,6 @@ class Invoice(Base):
     start_date = Column(String)
     id: Mapped[int] = mapped_column(primary_key=True)
     end_date = Column(String)
-    customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"))
+    customer_id1: Mapped[int] = mapped_column(ForeignKey("customers.id"))
     customer: Mapped["Customer"] = relationship(back_populates="invoice")
 

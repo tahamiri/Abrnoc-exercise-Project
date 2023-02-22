@@ -32,6 +32,7 @@ class InvoiceBase(BaseModel):
 
 class Invoice(InvoiceBase):
     id: int
+    customer_id1: int
     class Config:
         orm_mode = True
 
