@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  abrnak:
+    build: .
+    container_name: abrnak
+    volumes:
+      - ./:/app/
+    ports:
+      - 8989:8989
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:8989"]
+    #  interval: 1m30s
+    #  timeout: 10s
+    #  retries: 3
+    #  start_period: 40s
