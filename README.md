@@ -1,4 +1,4 @@
-# Abrnak exercise Project 
+# Abrnoc exercise Project 
 
 ## i used FastAPI with sqlite database and used the uvicorn engine for production and dockerized everything 
 
